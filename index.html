@@ -1,0 +1,49 @@
+// index.html
+// html file for access on web server
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Message Sender</h1>
+    <input type="text" id="messageInput" placeholder="Type your message here">
+    <button onclick="sendMessage()">Send Message</button>
+    
+    <h2>Server Responses:</h2>
+    <div id="messages"></div>
+
+    <script>
+        // Establish WebSocket connection
+        const socket = new WebSocket('ws://localhost:8080');
+
+        socket.onopen = function() {
+            console.log('WebSocket connection established.');
+        };
+
+        socket.onmessage = function(event) {
+            const messagesDiv = document.getElementById('messages');
+            const newMessage = document.createElement('p');
+            newMessage.textContent = `Server: ${event.data}`;
+            messagesDiv.appendChild(newMessage);
+        };
+
+        socket.onerror = function(error) {
+            console.error('WebSocket Error:', error);
+        };
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value;
+
+            if (message.trim() !== '') {
+                socket.send(message);
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
